@@ -1,0 +1,44 @@
+version: 2.1
+
+workflows:
+  legacy-database-testing-cron:
+    # cron
+    # Test the original `circleci/` convenience images
+    triggers:
+      - schedule:
+          # Nightly at 10:00 UTC
+          cron: "0 10 * * *"
+          filters:
+            branches:
+              only: master
+    jobs:
+      - legacy-test-mariadb:
+          version: "10.3"
+  legacy-database-testing:
+    # always runs
+    # Test the original `circleci/` convenience images
+    jobs:
+      - legacy-test-mariadb:
+          version: "10.3"
+      #- legacy-test-mysql
+      #- legacy-test-postgresql
+      #- legacy-test-mongodb
+      #- legacy-test-dynamodb
+
+jobs:
+  legacy-test-mariadb:
+    parameters:
+      version:
+        description: "MariaDB version to test."
+        type: string
+    docker:
+      - image: cimg/base:stable
+      - image: circleci/mariadb:<< parameters.version >>
+    steps:
+      - run:
+          name: "Install MariaDB Client"
+          command: sudo apt-get update && sudo apt-get install mysql-client
+      - run:
+          name: "Install MariaDB Client"
+          command: |
+            mysql -u circle -e 'SELECT VERSION();'
