@@ -19,7 +19,17 @@ workflows:
     # Test the original `circleci/` convenience images
     jobs:
       - legacy-test-mariadb:
+          version: "10.1"
+          name: "MariaDB v10.1"
+      - legacy-test-mariadb:
+          version: "10.2"
+          name: "MariaDB v10.2"
+      - legacy-test-mariadb:
           version: "10.3"
+          name: "MariaDB v10.3"
+      - legacy-test-mariadb:
+          version: "10.4"
+          name: "MariaDB v10.4"
       #- legacy-test-mysql
       #- legacy-test-postgresql
       #- legacy-test-mongodb
@@ -37,8 +47,10 @@ jobs:
     steps:
       - run:
           name: "Install MariaDB Client"
-          command: sudo apt-get update && sudo apt-get install mysql-client
+          command: apt-get update && apt-get install -y mysql-client
       - run:
-          name: "Install MariaDB Client"
-          command: |
-            mysql -u circle -e 'SELECT VERSION();'
+          name: "Very MariaDB Version"
+          command: mysql -h 127.0.0.1 -e 'SELECT VERSION();' | grep "<< parameters.version >>"
+      - run:
+          name: "Try Creating a New Database"
+          command: mysql -h 127.0.0.1 -e 'CREATE DATABASE my_test_database;'
