@@ -30,7 +30,15 @@ workflows:
       - legacy-test-mariadb:
           version: "10.4"
           name: "MariaDB v10.4"
-      #- legacy-test-mysql
+      - legacy-test-mysql:
+          version: "5.6"
+          name: "MySQL v5.6"
+      - legacy-test-mysql:
+          version: "5.7"
+          name: "MySQL v5.7"
+      - legacy-test-mysql:
+          version: "8.0"
+          name: "MySQL v8.0"
       #- legacy-test-postgresql
       #- legacy-test-mongodb
       #- legacy-test-dynamodb
@@ -49,7 +57,25 @@ jobs:
           name: "Install MariaDB Client"
           command: apt-get update && apt-get install -y mysql-client
       - run:
-          name: "Very MariaDB Version"
+          name: "Verify MariaDB Version"
+          command: mysql -h 127.0.0.1 -e 'SELECT VERSION();' | grep "<< parameters.version >>"
+      - run:
+          name: "Try Creating a New Database"
+          command: mysql -h 127.0.0.1 -e 'CREATE DATABASE my_test_database;'
+  legacy-test-mysql:
+    parameters:
+      version:
+        description: "MySQL version to test."
+        type: string
+    docker:
+      - image: cimg/base:stable
+      - image: circleci/mysql:<< parameters.version >>
+    steps:
+      - run:
+          name: "Install MySQL Client"
+          command: apt-get update && apt-get install -y mysql-client
+      - run:
+          name: "Verify MySQL Version"
           command: mysql -h 127.0.0.1 -e 'SELECT VERSION();' | grep "<< parameters.version >>"
       - run:
           name: "Try Creating a New Database"
