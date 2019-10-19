@@ -57,7 +57,15 @@ workflows:
       - legacy-test-postgresql:
           version: "12.0"
           name: "Postgres v12.0"
-      #- legacy-test-mongodb
+      - legacy-test-mongodb:
+          version: "3.6"
+          name: "MongoDB v3.6"
+      - legacy-test-mongodb:
+          version: "4.0"
+          name: "MongoDB v4.0"
+      - legacy-test-mongodb:
+          version: "4.2"
+          name: "MongoDB v4.2"
       #- legacy-test-dynamodb
 
 jobs:
@@ -102,7 +110,9 @@ jobs:
           command: mysql -h 127.0.0.1 -e 'SELECT VERSION();' | grep "<< parameters.version >>"
       - run:
           name: "Try Creating a New Database"
-          command: mysql -h 127.0.0.1 -e 'CREATE DATABASE my_test_database;'
+          command: |
+            mysql -h 127.0.0.1 -e 'CREATE DATABASE my_test_database;'
+            mysql -h 127.0.0.1 -e 'SHOW DATABASES;'
   legacy-test-postgresql:
     parameters:
       version:
@@ -125,4 +135,30 @@ jobs:
           command: PAGER=cat psql -d postgres -U circleci -h 127.0.0.1 -c 'SELECT version();'
       - run:
           name: "Try Creating a New Database"
-          command: PAGER=cat psql -d circle_test -U circleci -h 127.0.0.1 -c 'CREATE DATABASE my_test_database;'
+          command: |
+            PAGER=cat psql -d circle_test -U circleci -h 127.0.0.1 -c 'CREATE DATABASE my_test_database;'
+            PAGER=cat psql -d circle_test -U circleci -h 127.0.0.1 -c '\list'
+  legacy-test-mongodb:
+    parameters:
+      version:
+        description: "MongoDB version to test."
+        type: string
+    docker:
+      - image: cimg/base:stable
+      - image: circleci/mongo:<< parameters.version >>
+    steps:
+      - run:
+          name: "Install MongoDB Shell"
+          command: apt-get update && apt-get install -y mongodb-clients
+      - run:
+          name: "Wait For DB to be Ready"
+          command: dockerize -wait tcp://localhost:27017 -timeout 1m
+      - run:
+          name: "Verify MongoDB Version"
+          command: |
+            mongo 127.0.0.1 --eval 'db.version()' | grep 'MongoDB server version: << parameters.version >>'
+      - run:
+          name: "Try Creating a New Database"
+          command: |
+            mongo 127.0.0.1 --eval 'db = db.getSiblingDB("my_test_database")'
+            mongo 127.0.0.1 --eval 'db.adminCommand( "listDatabases" )'
