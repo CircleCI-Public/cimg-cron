@@ -13,7 +13,53 @@ workflows:
               only: master
     jobs:
       - legacy-test-mariadb:
+          version: "10.1"
+          name: "MariaDB v10.1"
+      - legacy-test-mariadb:
+          version: "10.2"
+          name: "MariaDB v10.2"
+      - legacy-test-mariadb:
           version: "10.3"
+          name: "MariaDB v10.3"
+      - legacy-test-mariadb:
+          version: "10.4"
+          name: "MariaDB v10.4"
+      - legacy-test-mysql:
+          version: "5.6"
+          name: "MySQL v5.6"
+      - legacy-test-mysql:
+          version: "5.7"
+          name: "MySQL v5.7"
+      - legacy-test-mysql:
+          version: "8.0"
+          name: "MySQL v8.0"
+      - legacy-test-postgresql:
+          version: "9.4"
+          name: "Postgres v9.4"
+      - legacy-test-postgresql:
+          version: "9.5"
+          name: "Postgres v9.5"
+      - legacy-test-postgresql:
+          version: "9.6"
+          name: "Postgres v9.6"
+      - legacy-test-postgresql:
+          version: "10.10"
+          name: "Postgres v10.10"
+      - legacy-test-postgresql:
+          version: "11.5"
+          name: "Postgres v11.5"
+      - legacy-test-postgresql:
+          version: "12.0"
+          name: "Postgres v12.0"
+      - legacy-test-mongodb:
+          version: "3.6"
+          name: "MongoDB v3.6"
+      - legacy-test-mongodb:
+          version: "4.0"
+          name: "MongoDB v4.0"
+      - legacy-test-mongodb:
+          version: "4.2"
+          name: "MongoDB v4.2"
   legacy-database-testing:
     # always runs
     # Test the original `circleci/` convenience images
@@ -66,7 +112,6 @@ workflows:
       - legacy-test-mongodb:
           version: "4.2"
           name: "MongoDB v4.2"
-      #- legacy-test-dynamodb
 
 jobs:
   legacy-test-mariadb:
