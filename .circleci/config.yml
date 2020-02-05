@@ -125,16 +125,16 @@ jobs:
     steps:
       - run:
           name: "Install MariaDB Client"
-          command: apt-get update && apt-get install -y mysql-client
+          command: sudo apt-get update && sudo apt-get install -y mysql-client
       - run:
           name: "Wait For DB to be Ready"
           command: dockerize -wait tcp://localhost:3306 -timeout 1m
       - run:
           name: "Verify MariaDB Version"
-          command: mysql -h 127.0.0.1 -e 'SELECT VERSION();' | grep "<< parameters.version >>"
+          command: sudo mysql -h 127.0.0.1 -e 'SELECT VERSION();' | grep "<< parameters.version >>"
       - run:
           name: "Try Creating a New Database"
-          command: mysql -h 127.0.0.1 -e 'CREATE DATABASE my_test_database;'
+          command: sudo mysql -h 127.0.0.1 -e 'CREATE DATABASE my_test_database;'
   legacy-test-mysql:
     parameters:
       version:
@@ -146,18 +146,18 @@ jobs:
     steps:
       - run:
           name: "Install MySQL Client"
-          command: apt-get update && apt-get install -y mysql-client
+          command: sudo apt-get update && sudo apt-get install -y mysql-client
       - run:
           name: "Wait For DB to be Ready"
           command: dockerize -wait tcp://localhost:3306 -timeout 1m
       - run:
           name: "Verify MySQL Version"
-          command: mysql -h 127.0.0.1 -e 'SELECT VERSION();' | grep "<< parameters.version >>"
+          command: sudo mysql -h 127.0.0.1 -e 'SELECT VERSION();' | grep "<< parameters.version >>"
       - run:
           name: "Try Creating a New Database"
           command: |
-            mysql -h 127.0.0.1 -e 'CREATE DATABASE my_test_database;'
-            mysql -h 127.0.0.1 -e 'SHOW DATABASES;'
+            sudo mysql -h 127.0.0.1 -e 'CREATE DATABASE my_test_database;'
+            sudo mysql -h 127.0.0.1 -e 'SHOW DATABASES;'
   legacy-test-postgresql:
     parameters:
       version:
@@ -171,7 +171,7 @@ jobs:
     steps:
       - run:
           name: "Install PostgreSQL Client"
-          command: apt-get update && apt-get install -y postgresql-client
+          command: sudo apt-get update && sudo apt-get install -y postgresql-client
       - run:
           name: "Wait For DB to be Ready"
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
@@ -194,7 +194,7 @@ jobs:
     steps:
       - run:
           name: "Install MongoDB Shell"
-          command: apt-get update && apt-get install -y mongodb-clients
+          command: sudo apt-get update && sudo apt-get install -y mongodb-clients
       - run:
           name: "Wait For DB to be Ready"
           command: dockerize -wait tcp://localhost:27017 -timeout 1m
