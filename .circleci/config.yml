@@ -168,6 +168,7 @@ jobs:
       - image: circleci/postgres:<< parameters.version >>
         environment:
           POSTGRES_USER: circleci
+          POSTGRES_HOST_AUTH_METHOD: trust
     steps:
       - run:
           name: "Install PostgreSQL Client"
