@@ -24,17 +24,7 @@ workflows:
                   curl -sSL -o README.md "https://raw.githubusercontent.com/CircleCI-Public/${repoName}/main/README.md"
 
   legacy-database-testing-cron:
-    when:
-      not: << pipeline.parameters.cron >>
-    # cron
-    # Test the original `circleci/` convenience images
-    triggers:
-      - schedule:
-          # Nightly at 10:00 UTC
-          cron: "0 10 * * *"
-          filters:
-            branches:
-              only: master
+    when: << pipeline.parameters.cron >>
     jobs:
       - legacy-test-mariadb:
           version: "10.1"
@@ -86,9 +76,6 @@ workflows:
           name: "MongoDB v4.2"
   legacy-database-testing:
     when:
-      not: << pipeline.parameters.cron >>
-    # always runs
-    # Test the original `circleci/` convenience images
     jobs:
       - legacy-test-mariadb:
           version: "10.1"
