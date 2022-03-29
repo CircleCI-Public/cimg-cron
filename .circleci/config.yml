@@ -12,16 +12,26 @@ workflows:
   daily-cron:
     when: << pipeline.parameters.cron >>
     jobs:
-      - sonar/update-readme:
+      - cimg-readme-sync:
           matrix:
             parameters:
               image:
+                - "cimg/android"
+                - "cimg/base"
+                - "cimg/clojure"
+                - "cimg/elixir"
+                - "cimg/go"
                 - "cimg/mariadb"
-              version: ["0.18.0"]
-            pre-steps:
-              - run: |
-                  repoName=$(echo "<< parameters.image >>" | sed -e 's/\//-/g')
-                  curl -sSL -o README.md "https://raw.githubusercontent.com/CircleCI-Public/${repoName}/main/README.md"
+                - "cimg/mysql"
+                - "cimg/node"
+                - "cimg/openjdk"
+                - "cimg/postgres"
+                - "cimg/php"
+                - "cimg/python"
+                - "cimg/redis"
+                - "cimg/ruby"
+                - "cimg/rust"
+          context: readme-sync-context
 
   legacy-database-testing-cron:
     when: << pipeline.parameters.cron >>
@@ -127,6 +137,21 @@ workflows:
           name: "MongoDB v4.2"
 
 jobs:
+  cimg-readme-sync:
+    parameters:
+      image:
+        type: string
+    docker:
+      - image: cimg/base:2022.01
+    steps:
+      - run: |
+          repoName=$(echo "<< parameters.image >>" | sed -e 's/\//-/g')
+          curl -sSL -o README.md "https://raw.githubusercontent.com/CircleCI-Public/${repoName}/main/README.md"
+      - sonar/install:
+          version: "0.18.0"
+      - sonar/update-readme:
+          image: << parameters.image >>
+
   legacy-test-mariadb:
     parameters:
       version:
