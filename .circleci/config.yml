@@ -1,7 +1,31 @@
 version: 2.1
 
+parameters:
+  cron:
+    type: boolean
+    default: false
+
+orbs:
+  sonar: hubci/sonar@1.0.0
+
 workflows:
+  daily-cron:
+    when: << pipeline.parameters.cron >>
+    jobs:
+      - sonar/update-readme:
+          matrix:
+            parameters:
+              image:
+                - "cimg/mariadb"
+              version: ["0.18.0"]
+            pre-steps:
+              - run: |
+                  repoName=$(echo "<< parameters.image >>" | sed -e 's/\//-/g')
+                  curl -sSL -o README.md "https://raw.githubusercontent.com/CircleCI-Public/${repoName}/main/README.md"
+
   legacy-database-testing-cron:
+    when:
+      not: << pipeline.parameters.cron >>
     # cron
     # Test the original `circleci/` convenience images
     triggers:
@@ -61,6 +85,8 @@ workflows:
           version: "4.2"
           name: "MongoDB v4.2"
   legacy-database-testing:
+    when:
+      not: << pipeline.parameters.cron >>
     # always runs
     # Test the original `circleci/` convenience images
     jobs:

@@ -1,0 +1,22 @@
+{
+	"name": "Daily Readme Sync",
+	"description": "Kickoff a pipeline to update the readmes of cimgs to Docker Hub",
+	"parameters": {
+		"branch": "main",
+		"cron": true
+	},
+	"timetable": {
+		"per-hour": 1,
+		"hours-of-day": [20],
+		"days-of-week": [
+			"SUN",
+			"MON",
+			"TUE",
+			"WED",
+			"THU",
+			"FRI",
+			"SAT"
+		]
+	},
+	"attribution-actor": "system"
+}
