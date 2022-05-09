@@ -19,6 +19,7 @@ workflows:
                 - "cimg/android"
                 - "cimg/base"
                 - "cimg/clojure"
+                - "cimg/deploy"
                 - "cimg/elixir"
                 - "cimg/go"
                 - "cimg/mariadb"
