@@ -17,10 +17,12 @@ workflows:
             parameters:
               image:
                 - "cimg/android"
+                - "cimg/aws"
                 - "cimg/base"
                 - "cimg/clojure"
                 - "cimg/deploy"
                 - "cimg/elixir"
+                - "cimg/gcp"
                 - "cimg/go"
                 - "cimg/mariadb"
                 - "cimg/mysql"
