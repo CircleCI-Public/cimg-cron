@@ -18,6 +18,7 @@ workflows:
               image:
                 - "cimg/android"
                 - "cimg/aws"
+                - "cimg/azure"
                 - "cimg/base"
                 - "cimg/clojure"
                 - "cimg/deploy"
